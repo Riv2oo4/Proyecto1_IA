@@ -137,7 +137,7 @@ df_euclidiana = pd.DataFrame(resultados_euclidiana, columns=["Archivo", "Largo C
 pd.options.display.float_format = '{:,.6f}'.format  
 pd.options.display.width = 150  
 pd.set_option('display.max_columns', None)  
-print("\nResultados para Heurística Manhattan:")
+print("\nResultados para Heuristica Manhattan:")
 print(df_manhattan.to_string(index=False))
-print("\nResultados para Heurística Euclidiana:")
+print("\nResultados para Heuristica Euclidiana:")
 print(df_euclidiana.to_string(index=False))
