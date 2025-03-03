@@ -20,7 +20,6 @@ def bfs(laberinto, inicio, meta):
     cola = deque([(inicio, [inicio])])  
     visitados = set([inicio])
     nodos_explorados = 0
-    branching_factor_total = 0
 
     while cola:
         nodo_actual, camino = cola.popleft()
@@ -29,25 +28,17 @@ def bfs(laberinto, inicio, meta):
         if nodo_actual == meta:
             fin_tiempo = time.time()
             tiempo_ejecucion = fin_tiempo - inicio_tiempo
-            branching_factor = branching_factor_total / nodos_explorados if nodos_explorados else 0
             return {
                 "largo_camino": len(camino) - 1,  
                 "nodos_explorados": nodos_explorados,
                 "tiempo_ejecucion": tiempo_ejecucion,
-                "branching_factor": branching_factor,
             }
 
-        vecinos = []
         for movimiento in grafo.movimientos:
             nueva_fila, nueva_columna = nodo_actual[0] + movimiento[0], nodo_actual[1] + movimiento[1]
             if grafo.es_valido(nueva_fila, nueva_columna, visitados):
-                vecinos.append((nueva_fila, nueva_columna))
-
-        branching_factor_total += len(vecinos)
-
-        for vecino in vecinos:
-            visitados.add(vecino)
-            cola.append((vecino, camino + [vecino]))  
+                visitados.add((nueva_fila, nueva_columna))  
+                cola.append(((nueva_fila, nueva_columna), camino + [(nueva_fila, nueva_columna)]))
 
     return None  
 
@@ -60,6 +51,7 @@ def cargar_laberinto(nombre_archivo):
     meta = tuple(map(int, np.argwhere(laberinto == '3')[0]))
 
     return laberinto, inicio, meta
+
 ruta_carpeta = "Laberintos"
 resultados = []
 
@@ -71,15 +63,15 @@ for archivo in os.listdir(ruta_carpeta):
         if inicio and meta:
             resultado = bfs(laberinto, inicio, meta)
             if resultado:
-                resultados.append([archivo, resultado["largo_camino"], resultado["nodos_explorados"], resultado["tiempo_ejecucion"], resultado["branching_factor"]])
+                resultados.append([archivo, resultado["largo_camino"], resultado["nodos_explorados"], resultado["tiempo_ejecucion"]])
             else:
-                resultados.append([archivo, "No solucionable", "No solucionable", "No solucionable", "No solucionable"])
+                resultados.append([archivo, "No solucionable", "No solucionable", "No solucionable"])
         else:
-            resultados.append([archivo, "Error en el archivo", "Error en el archivo", "Error en el archivo", "Error en el archivo"])
+            resultados.append([archivo, "Error en el archivo", "Error en el archivo", "Error en el archivo"])
 
-df_resultados = pd.DataFrame(resultados, columns=["Archivo", "Largo del Camino", "Nodos Explorados", "Tiempo de Ejecución (s)", "Branching Factor"])
+df_resultados = pd.DataFrame(resultados, columns=["Archivo", "Largo del Camino", "Nodos Explorados", "Tiempo de Ejecución (s)"])
 pd.set_option('display.max_columns', None)  
 pd.set_option('display.expand_frame_repr', False)  
 pd.set_option('display.max_colwidth', None)  
 
-print(df_resultados.to_string(index=False))  
+print(df_resultados.to_string(index=False))
