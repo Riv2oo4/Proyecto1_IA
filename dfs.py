@@ -119,7 +119,7 @@ for archivo in os.listdir(ruta_carpeta):
         else:
             resultados.append([archivo, "Error en el archivo", "Error en el archivo", "Error en el archivo", "Error en el archivo"])
 
-df_resultados = pd.DataFrame(resultados, columns=["Archivo", "Largo del Camino", "Nodos Explorados", "Tiempo de Ejecución (s)", "Branching Factor"])
+df_resultados = pd.DataFrame(resultados, columns=["Archivo", "Largo del Camino", "Nodos Explorados", "Tiempo de Ejecucion (s)", "Branching Factor"])
 pd.set_option('display.max_columns', None)  
 pd.set_option('display.expand_frame_repr', False)  
 pd.set_option('display.max_colwidth', None)  
