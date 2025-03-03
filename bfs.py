@@ -14,7 +14,6 @@ class Grafo:
         return 0 <= fila < self.filas and 0 <= columna < self.columnas and self.laberinto[fila, columna] != '1' and (fila, columna) not in visitados
 
 def reconstruir_camino(padres, inicio, meta):
-    """ Reconstruye el camino a partir del diccionario de padres. """
     camino = []
     nodo = meta
     while nodo is not None:
@@ -96,7 +95,7 @@ for archivo in os.listdir(ruta_carpeta):
             resultados.append([archivo, "Error en el archivo", "Error en el archivo", "Error en el archivo", "Error en el archivo", "Error en el archivo"])
 
 df_resultados = pd.DataFrame(resultados, columns=[
-    "Archivo", "Largo del Camino", "Nodos Explorados", "Nodos Generados", "Branching Factor", "Tiempo de Ejecución (s)"
+    "Archivo", "Largo del Camino", "Nodos Explorados", "Nodos Generados", "Branching Factor", "Tiempo de Ejecucion (s)"
 ])
 pd.set_option('display.max_columns', None)  
 pd.set_option('display.expand_frame_repr', False)  
