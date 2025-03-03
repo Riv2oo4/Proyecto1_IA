@@ -66,9 +66,9 @@ def a_star(maze, start, goal, heuristic):
     
     return None
 
-# Procesar todos los laberintos en la carpeta "Laberintos"
 ruta_carpeta = "Laberintos"
-resultados = []
+resultados_manhattan = []
+resultados_euclidiana = []
 
 for archivo in os.listdir(ruta_carpeta):
     if archivo.endswith(".txt"):
@@ -79,24 +79,27 @@ for archivo in os.listdir(ruta_carpeta):
             resultado_manhattan = a_star(laberinto, inicio, meta, heuristic_manhattan)
             resultado_euclidiana = a_star(laberinto, inicio, meta, heuristic_euclidean)
             
-            if resultado_manhattan and resultado_euclidiana:
-                resultados.append([
-                    archivo, resultado_manhattan["largo_camino"], resultado_manhattan["nodos_explorados"], resultado_manhattan["tiempo_ejecucion"], resultado_manhattan["branching_factor"],
-                    resultado_euclidiana["largo_camino"], resultado_euclidiana["nodos_explorados"], resultado_euclidiana["tiempo_ejecucion"], resultado_euclidiana["branching_factor"]
+            if resultado_manhattan:
+                resultados_manhattan.append([
+                    archivo, resultado_manhattan["largo_camino"], resultado_manhattan["nodos_explorados"],
+                    resultado_manhattan["tiempo_ejecucion"], resultado_manhattan["branching_factor"]
                 ])
-            else:
-                resultados.append([archivo, "No solucionable"] * 9)
-        else:
-            resultados.append([archivo, "Error en el archivo"] * 9)
+            
+            if resultado_euclidiana:
+                resultados_euclidiana.append([
+                    archivo, resultado_euclidiana["largo_camino"], resultado_euclidiana["nodos_explorados"],
+                    resultado_euclidiana["tiempo_ejecucion"], resultado_euclidiana["branching_factor"]
+                ])
 
-# Guardar en un DataFrame y mostrar resultados
-df_resultados = pd.DataFrame(resultados, columns=[
-    "Archivo", "Largo Camino (Manhattan)", "Nodos Explorados (Manhattan)", "Tiempo Ejecución (Manhattan)", "Branching Factor (Manhattan)",
-    "Largo Camino (Euclidiana)", "Nodos Explorados (Euclidiana)", "Tiempo Ejecución (Euclidiana)", "Branching Factor (Euclidiana)"
-])
+df_manhattan_a_star = pd.DataFrame(resultados_manhattan, columns=["Archivo", "Largo Camino", "Nodos Explorados", "Tiempo (s)", "Branching Factor"])
+df_euclidiana_a_star = pd.DataFrame(resultados_euclidiana, columns=["Archivo", "Largo Camino", "Nodos Explorados", "Tiempo (s)", "Branching Factor"])
 
-pd.set_option('display.max_columns', None)  
-pd.set_option('display.expand_frame_repr', False)  
-pd.set_option('display.max_colwidth', None) 
+pd.options.display.float_format = '{:,.6f}'.format  
+pd.options.display.width = 150  
+pd.set_option('display.max_columns', None) 
 
-print(df_resultados.to_string(index=False))
+print("\nResultados A* para Heuristica Manhattan:")
+print(df_manhattan_a_star.to_string(index=False))
+
+print("\nResultados A* para Heuristica Euclidiana:")
+print(df_euclidiana_a_star.to_string(index=False))
