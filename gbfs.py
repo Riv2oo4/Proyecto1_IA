@@ -6,10 +6,10 @@ import pandas as pd
 
 class Nodo:
     def __init__(self, estado, padre=None, costo=0, heuristica=0):
-        self.estado = estado  # Coordenadas (fila, columna)
-        self.padre = padre  # Nodo padre en la ruta
-        self.costo = costo  # Costo acumulado
-        self.heuristica = heuristica  # Valor heurístico
+        self.estado = estado  
+        self.padre = padre  
+        self.costo = costo  
+        self.heuristica = heuristica  
     
     def __lt__(self, other):
         return self.heuristica < other.heuristica
@@ -25,7 +25,7 @@ class Grafo:
         self.laberinto = laberinto
         self.filas = len(laberinto)
         self.columnas = len(laberinto[0])
-        self.movimientos = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # Arriba, Derecha, Abajo, Izquierda
+        self.movimientos = [(-1, 0), (0, 1), (1, 0), (0, -1)]  
     
     def es_valido(self, fila, columna):
         return 0 <= fila < self.filas and 0 <= columna < self.columnas and self.laberinto[fila][columna] != '1'
@@ -91,7 +91,7 @@ def greedy_bfs(laberinto, inicio, meta, heuristica_tipo):
                 visitados.add(vecino)
                 heapq.heappush(frontera, vecino)
     
-    return None  # No se encontró solución
+    return None  
 
 def cargar_laberinto(nombre_archivo):
     with open(nombre_archivo, 'r') as f:
@@ -107,9 +107,9 @@ def cargar_laberinto(nombre_archivo):
     
     return laberinto, inicio, meta
 
-# Procesar todos los laberintos en la carpeta "Laberintos"
 ruta_carpeta = "Laberintos"
-resultados = []
+resultados_manhattan = []
+resultados_euclidiana = []
 
 for archivo in os.listdir(ruta_carpeta):
     if archivo.endswith(".txt"):
@@ -120,24 +120,24 @@ for archivo in os.listdir(ruta_carpeta):
             resultado_manhattan = greedy_bfs(laberinto, inicio, meta, "manhattan")
             resultado_euclidiana = greedy_bfs(laberinto, inicio, meta, "euclidiana")
             
-            if resultado_manhattan and resultado_euclidiana:
-                resultados.append([
-                    archivo, resultado_manhattan["largo_camino"], resultado_manhattan["nodos_explorados"], resultado_manhattan["tiempo_ejecucion"], resultado_manhattan["branching_factor"],
-                    resultado_euclidiana["largo_camino"], resultado_euclidiana["nodos_explorados"], resultado_euclidiana["tiempo_ejecucion"], resultado_euclidiana["branching_factor"]
+            if resultado_manhattan:
+                resultados_manhattan.append([
+                    archivo, resultado_manhattan["largo_camino"], resultado_manhattan["nodos_explorados"],
+                    resultado_manhattan["tiempo_ejecucion"], resultado_manhattan["branching_factor"]
                 ])
-            else:
-                resultados.append([archivo, "No solucionable"] * 9)
-        else:
-            resultados.append([archivo, "Error en el archivo"] * 9)
+            
+            if resultado_euclidiana:
+                resultados_euclidiana.append([
+                    archivo, resultado_euclidiana["largo_camino"], resultado_euclidiana["nodos_explorados"],
+                    resultado_euclidiana["tiempo_ejecucion"], resultado_euclidiana["branching_factor"]
+                ])
 
-# Guardar en un DataFrame y mostrar resultados
-df_resultados = pd.DataFrame(resultados, columns=[
-    "Archivo", "Largo Camino (Manhattan)", "Nodos Explorados (Manhattan)", "Tiempo Ejecución (Manhattan)", "Branching Factor (Manhattan)",
-    "Largo Camino (Euclidiana)", "Nodos Explorados (Euclidiana)", "Tiempo Ejecución (Euclidiana)", "Branching Factor (Euclidiana)"
-])
-
-pd.set_option('display.max_columns', None)  # Muestra todas las columnas
-pd.set_option('display.expand_frame_repr', False)  # Evita que se parta en múltiples líneas
-pd.set_option('display.max_colwidth', None)  # Evita truncamiento de valores largos
-
-print(df_resultados.to_string(index=False))  
+df_manhattan = pd.DataFrame(resultados_manhattan, columns=["Archivo", "Largo Camino", "Nodos Explorados", "Tiempo (s)", "Branching Factor"])
+df_euclidiana = pd.DataFrame(resultados_euclidiana, columns=["Archivo", "Largo Camino", "Nodos Explorados", "Tiempo (s)", "Branching Factor"])
+pd.options.display.float_format = '{:,.6f}'.format  
+pd.options.display.width = 150  
+pd.set_option('display.max_columns', None)  
+print("\nResultados para Heurística Manhattan:")
+print(df_manhattan.to_string(index=False))
+print("\nResultados para Heurística Euclidiana:")
+print(df_euclidiana.to_string(index=False))
