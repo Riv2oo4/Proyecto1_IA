@@ -17,10 +17,9 @@ class PilaLIFO:
 
 class Nodo:
     def __init__(self, estado, padre=None, costo=0):
-        self.estado = estado  # Coordenadas (fila, columna)
-        self.padre = padre  # Nodo padre en la ruta
-        self.costo = costo  # Costo acumulado
-
+        self.estado = estado  
+        self.padre = padre 
+        self.costo = costo  
     def __eq__(self, other):
         return self.estado == other.estado
 
@@ -32,7 +31,7 @@ class Grafo:
         self.laberinto = laberinto
         self.filas = len(laberinto)
         self.columnas = len(laberinto[0])
-        self.movimientos = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # Arriba, Derecha, Abajo, Izquierda
+        self.movimientos = [(-1, 0), (0, 1), (1, 0), (0, -1)]  
 
     def es_valido(self, fila, columna):
         return 0 <= fila < self.filas and 0 <= columna < self.columnas and self.laberinto[fila][columna] != '1'
@@ -67,7 +66,6 @@ def dfs(laberinto, inicio, meta):
             fin_tiempo = time.time()
             tiempo_ejecucion = fin_tiempo - inicio_tiempo
 
-            # Reconstruir el camino
             while nodo_actual:
                 camino.append(nodo_actual.estado)
                 nodo_actual = nodo_actual.padre
@@ -84,12 +82,12 @@ def dfs(laberinto, inicio, meta):
         vecinos = grafo.obtener_vecinos(nodo_actual)
         branching_factor_total += len(vecinos)
 
-        for vecino in reversed(vecinos):  # Se invierte el orden para simular pila (LIFO)
+        for vecino in reversed(vecinos):  
             if vecino not in visitados:
                 visitados.add(vecino)
                 pila.ADD(vecino)
 
-    return None  # No se encontró solución
+    return None  
 
 def cargar_laberinto(nombre_archivo):
     with open(nombre_archivo, 'r') as f:
@@ -104,8 +102,6 @@ def cargar_laberinto(nombre_archivo):
                 meta = (i, j)
 
     return laberinto, inicio, meta
-
-# Procesar todos los laberintos en la carpeta "Laberintos"
 ruta_carpeta = "Laberintos"
 resultados = []
 
@@ -123,10 +119,8 @@ for archivo in os.listdir(ruta_carpeta):
         else:
             resultados.append([archivo, "Error en el archivo", "Error en el archivo", "Error en el archivo", "Error en el archivo"])
 
-# Mostrar resultados en consola
 df_resultados = pd.DataFrame(resultados, columns=["Archivo", "Largo del Camino", "Nodos Explorados", "Tiempo de Ejecución (s)", "Branching Factor"])
-pd.set_option('display.max_columns', None)  # Muestra todas las columnas
-pd.set_option('display.expand_frame_repr', False)  # Evita que se parta en múltiples líneas
-pd.set_option('display.max_colwidth', None)  # Evita truncamiento de valores largos
-
+pd.set_option('display.max_columns', None)  
+pd.set_option('display.expand_frame_repr', False)  
+pd.set_option('display.max_colwidth', None)  
 print(df_resultados.to_string(index=False))  
