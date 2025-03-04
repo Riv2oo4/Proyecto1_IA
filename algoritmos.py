@@ -81,7 +81,7 @@ def heuristic_manhattan(a, b):
 def heuristic_euclidean(a, b):
     return np.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
-nombre_archivo = "Laberintos/Laberinto2-3.txt"
+nombre_archivo = "Laberintos/Laberinto3-3.txt"
 laberinto = cargar_laberinto(nombre_archivo)
 
 if laberinto is not None:
@@ -94,8 +94,8 @@ if laberinto is not None:
             "BFS": (bfs, None), "DFS": (dfs, None),
             "Greedy Manhattan": (greedy_search, heuristic_manhattan),
             "Greedy Euclidean": (greedy_search, heuristic_euclidean),
-            "A_Manhattan": (a_star, heuristic_manhattan),
-            "A_Euclidean": (a_star, heuristic_euclidean)
+            "A*_Manhattan": (a_star, heuristic_manhattan),
+            "A*_Euclidean": (a_star, heuristic_euclidean)
         }
         
         resultados = [[nombre, *medir_rendimiento(algoritmo, laberinto, start, goal, heuristica)] for nombre, (algoritmo, heuristica) in algoritmos.items()]
